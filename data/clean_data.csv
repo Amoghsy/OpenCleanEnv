@@ -1,0 +1,4 @@
+# Placeholder expected cleaned output
+id,name,email
+1,Alice,alice@example.com
+2,Unknown,bob@example.com

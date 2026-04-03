@@ -1,7 +1,10 @@
-spec_version: 1
-name: kernel_env
-type: space
-runtime: fastapi
-app: server.app:app
-port: 8000
+name: opencleanenv
+entrypoint: kernel_env.server.environment:OpenCleanEnv
+actions:
+  - REMOVE_DUPLICATES
+  - FILL_MISSING
+  - FIX_FORMAT
+observation_space:
+  type: json
+reward_range: [0.0, 1.0]
 

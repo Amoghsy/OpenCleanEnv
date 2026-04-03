@@ -1,27 +1,26 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree.
+from pydantic import BaseModel
+from typing import Dict, Any
 
-"""
-Data models for the Kernel Env Environment.
-
-The kernel_env environment is a simple test environment that echoes back messages.
-"""
-
-from openenv.core.env_server.types import Action, Observation
-from pydantic import Field
+class Action(BaseModel):
+    action_type: str
 
 
-class KernelAction(Action):
-    """Action for the Kernel Env environment - just a message to echo."""
+class OpenCleanAction(Action):
+    """Compatibility action model exported by kernel_env package."""
 
-    message: str = Field(..., description="Message to echo back")
+    pass
+
+class Observation(BaseModel):
+    data_preview: Dict[str, Any]
 
 
-class KernelObservation(Observation):
-    """Observation from the Kernel Env environment - the echoed message."""
+class OpenCleanObservation(Observation):
+    """Compatibility observation model exported by kernel_env package."""
 
-    echoed_message: str = Field(default="", description="The echoed message")
-    message_length: int = Field(default=0, description="Length of the echoed message")
+    pass
+
+class StepResult(BaseModel):
+    observation: Observation
+    reward: float
+    done: bool
+    info: Dict[str, Any]

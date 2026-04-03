@@ -1,0 +1,4 @@
+# Placeholder input data for the cleaning pipeline
+id,name,email
+1, Alice ,alice_at_example.com
+2,,bob@example.com
