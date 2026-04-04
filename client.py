@@ -12,7 +12,10 @@ from openenv.core import EnvClient
 from openenv.core.client_types import StepResult
 from openenv.core.env_server.types import State
 
-from .models import KernelAction, KernelObservation
+try:
+    from .models import KernelAction, KernelObservation
+except ImportError:
+    from models import KernelAction, KernelObservation
 
 
 class KernelEnv(
@@ -54,9 +57,10 @@ class KernelEnv(
         Returns:
             Dictionary representation suitable for JSON encoding
         """
-        return {
-            "message": action.message,
-        }
+        payload = {"action": action.action}
+        if getattr(action, "metadata", None):
+            payload["metadata"] = action.metadata
+        return payload
 
     def _parse_result(self, payload: Dict) -> StepResult[KernelObservation]:
         """
@@ -70,10 +74,17 @@ class KernelEnv(
         """
         obs_data = payload.get("observation", {})
         observation = KernelObservation(
-            echoed_message=obs_data.get("echoed_message", ""),
-            message_length=obs_data.get("message_length", 0),
-            done=payload.get("done", False),
+            message=obs_data.get("message", ""),
+            rows=obs_data.get("rows", 0),
+            columns=obs_data.get("columns", []),
+            missing_values=obs_data.get("missing_values", 0),
+            duplicate_rows=obs_data.get("duplicate_rows", 0),
+            invalid_emails=obs_data.get("invalid_emails", 0),
+            sample=obs_data.get("sample", {}),
             reward=payload.get("reward"),
+            done=payload.get("done", False),
+            goal=obs_data.get("goal", ""),
+            final_score=obs_data.get("final_score"),
             metadata=obs_data.get("metadata", {}),
         )
 

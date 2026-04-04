@@ -1,7 +1,8 @@
 import os
-import requests
 from typing import List, Optional
 from openai import OpenAI
+from client import KernelEnv
+from models import OpenCleanAction
 
 # -------- ENV CONFIG --------
 ENV_URL = os.getenv("ENV_URL", "http://127.0.0.1:8000")
@@ -47,76 +48,67 @@ def run():
     log_start(TASK_NAME, BENCHMARK, MODEL_NAME)
 
     try:
-        # ✅ POST /reset  (not GET)
-        r = requests.post(f"{ENV_URL}/reset", json={}, timeout=10)
-        r.raise_for_status()
+        with KernelEnv(base_url=ENV_URL).sync() as env:
+            env.reset()
 
-        # Ordered action plan — each action finds something to fix
-        action_plan = {
-            1: "REMOVE_DUPLICATES",
-            2: "FILL_MISSING",
-            3: "FIX_FORMAT",
-        }
+            # Ordered action plan — each action finds something to fix
+            action_plan = {
+                1: "REMOVE_DUPLICATES",
+                2: "FILL_MISSING",
+                3: "FIX_FORMAT",
+            }
 
-        for step in range(1, MAX_STEPS + 1):
-            error_msg = None
+            for step in range(1, MAX_STEPS + 1):
+                error_msg = None
 
-            try:
-                # Required real LLM call
-                completion = client.chat.completions.create(
-                    model=MODEL_NAME,
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": (
-                                "You are a data cleaning agent. "
-                                "Available actions: REMOVE_DUPLICATES, FILL_MISSING, FIX_FORMAT."
-                            ),
-                        },
-                        {
-                            "role": "user",
-                            "content": (
-                                f"Step {step}: The dataset has duplicate rows, missing values, "
-                                "and invalid email formats. What is the best next action?"
-                            ),
-                        },
-                    ],
-                    temperature=0,
-                    max_tokens=20,
-                )
-                _ = completion.choices[0].message.content
+                try:
+                    # Required real LLM call
+                    completion = client.chat.completions.create(
+                        model=MODEL_NAME,
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": (
+                                    "You are a data cleaning agent. "
+                                    "Available actions: REMOVE_DUPLICATES, FILL_MISSING, FIX_FORMAT."
+                                ),
+                            },
+                            {
+                                "role": "user",
+                                "content": (
+                                    f"Step {step}: The dataset has duplicate rows, missing values, "
+                                    "and invalid email formats. What is the best next action?"
+                                ),
+                            },
+                        ],
+                        temperature=0,
+                        max_tokens=20,
+                    )
+                    _ = completion.choices[0].message.content
 
-                # Deterministic action regardless of LLM output
-                action = action_plan.get(step, "FIX_FORMAT")
+                    # Deterministic action regardless of LLM output
+                    action = action_plan.get(step, "FIX_FORMAT")
 
-                # ✅ Flat payload — matches OpenCleanAction Pydantic schema
-                res = requests.post(
-                    f"{ENV_URL}/step",
-                    json={"action": action},
-                    timeout=10,
-                )
-                res.raise_for_status()
+                    result = env.step(OpenCleanAction(action=action))
+                    reward = float(result.reward or 0.0)
+                    done = bool(result.done)
 
-                data   = res.json()
-                reward = float(data.get("reward", 0.0))
-                done   = bool(data.get("done", False))
+                except Exception as e:
+                    action = "ERROR"
+                    reward = 0.0
+                    done = True
+                    error_msg = str(e)
 
-            except Exception as e:
-                action    = "ERROR"
-                reward    = 0.0
-                done      = True
-                error_msg = str(e)
+                rewards.append(reward)
+                steps_taken = step
 
-            rewards.append(reward)
-            steps_taken = step
+                log_step(step, action, reward, done, error_msg)
 
-            log_step(step, action, reward, done, error_msg)
+                if done:
+                    success = error_msg is None
+                    break
 
-            if done:
-                success = error_msg is None
-                break
-
-        success = success or (len(rewards) > 0 and rewards[-1] > 0)
+            success = success and (len(rewards) > 0)
 
     finally:
         log_end(success, steps_taken, rewards)
