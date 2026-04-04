@@ -152,7 +152,7 @@ HF_TOKEN=your_token_here
 - ✅ Dockerized  
 - ✅ Structured reward system  
 - ✅ Real LLM integration  
-- ✅ Hackathon-ready  
+
 
 ---
 
