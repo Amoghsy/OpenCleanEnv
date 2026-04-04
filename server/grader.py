@@ -1,29 +1,60 @@
 import pandas as pd
+import os
+
 
 class Grader:
     def __init__(self):
-        # Ground truth
-        self.clean_data = pd.DataFrame({
-            "name": ["A", "B", "C"],
-            "age": [25, 0, 30],
-            "salary": [50000, 60000, 60000]
-        })
+        # Load ground truth from CSV
+        base_path = os.path.dirname(__file__)
+        data_path = os.path.join(base_path, "../data")
 
-    def grade(self, agent_data):
-        df = pd.DataFrame(agent_data)
+        self.clean_data = pd.read_csv(os.path.join(data_path, "clean_data.csv"))
 
+    def grade(self, df: pd.DataFrame) -> float:
         score = 0.0
 
-        # check duplicates removed
+        # ---------- SAFETY ----------
+        if df is None or df.empty:
+            return 0.0
+
+        # Ensure same column order
+        try:
+            df = df[self.clean_data.columns]
+        except Exception:
+            return 0.0
+
+        # ---------- 1. Row count ----------
         if len(df) == len(self.clean_data):
-            score += 0.3
+            score += 0.25
+        else:
+            score += 0.25 * (min(len(df), len(self.clean_data)) / max(len(df), len(self.clean_data)))
 
-        # check missing handled
-        if df.isnull().sum().sum() == 0:
-            score += 0.3
+        # ---------- 2. Missing values ----------
+        missing = df.isnull().sum().sum()
+        total_cells = df.size
 
-        # check approximate correctness
-        if df.equals(self.clean_data):
-            score += 0.4
+        if total_cells > 0:
+            score += 0.25 * (1 - (missing / total_cells))
 
-        return round(score, 2)
+        # ---------- 3. Email validity ----------
+        if "email" in df.columns:
+            valid_mask = df["email"].astype(str).str.contains(r"^[^@]+@[^@]+\.[^@]+$")
+            score += 0.2 * valid_mask.mean()
+
+        # ---------- 4. Data similarity ----------
+        try:
+            df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
+            clean_sorted = self.clean_data.sort_values(by=list(self.clean_data.columns)).reset_index(drop=True)
+
+            matches = (df_sorted == clean_sorted).sum().sum()
+            total = df_sorted.size
+
+            if total > 0:
+                score += 0.3 * (matches / total)
+        except Exception:
+            pass
+
+        # ---------- CLAMP ----------
+        score = max(0.0, min(1.0, score))
+
+        return round(score, 3)
