@@ -1,5 +1,5 @@
 name: opencleanenv
-entrypoint: kernel_env.server.environment:OpenCleanEnv
+entrypoint: server.environment:OpenCleanEnv
 actions:
   - REMOVE_DUPLICATES
   - FILL_MISSING

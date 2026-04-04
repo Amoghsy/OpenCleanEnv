@@ -32,4 +32,4 @@ RUN /app/env/.venv/bin/pip install --no-deps -e /app/env
 
 EXPOSE 8000
 
-CMD ["/app/env/.venv/bin/uv", "run", "server", "--port", "8000"]
+CMD ["sh", "-c", "PYTHONPATH=/app/env uv run server --port 8000"]
