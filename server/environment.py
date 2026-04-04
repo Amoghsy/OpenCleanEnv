@@ -62,7 +62,12 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
         self._data_path = csv_path
         self.data = pd.read_csv(csv_path)
 
-        return self._build_observation("Environment reset", reward=0.0, done=False)
+        return self._build_observation(
+            "Environment reset",
+            reward=0.0,
+            done=False,
+            final_score=self.grader.grade(self.data),
+        )
 
     # ─────────────────────────────────────────
     # STEP
@@ -174,9 +179,8 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
             or dataset_clean
         )
 
-        final_score = None
-        if done:
-            final_score = self.grader.grade(self.data)
+        # Always provide a score snapshot so final_score is never null.
+        final_score = self.grader.grade(self.data)
 
         return self._build_observation(
             message=message,
