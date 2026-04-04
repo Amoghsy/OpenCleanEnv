@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-"""OpenClean environment implementation — FINAL FIXED VERSION."""
+"""OpenClean environment implementation."""
 
-from uuid import uuid4
 import os
+from uuid import uuid4
+
 import pandas as pd
 
 from openenv.core.env_server.interfaces import Environment
@@ -18,6 +19,7 @@ except ImportError:
 
 
 class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, State]):
+    """Environment that simulates a small deterministic data-cleaning workflow."""
 
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
@@ -36,7 +38,7 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
         self._state = State(
             episode_id=str(uuid4()),
             step_count=0,
-            current_action=None
+            current_action=None,
         )
 
     # ─────────────────────────────────────────
@@ -48,7 +50,7 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
         self._state = State(
             episode_id=episode_id or str(uuid4()),
             step_count=0,
-            current_action=None
+            current_action=None,
         )
 
         # Clear applied-actions tracker for new episode
@@ -72,7 +74,12 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
     # ─────────────────────────────────────────
     # STEP
     # ─────────────────────────────────────────
-    def step(self, action: OpenCleanAction, timeout_s=None, **kwargs) -> OpenCleanObservation:
+    def step(
+        self,
+        action: OpenCleanAction,
+        timeout_s=None,
+        **kwargs,
+    ) -> OpenCleanObservation:
         del timeout_s, kwargs
 
         # Safety: restore data if None (e.g. server restart mid-session)
@@ -100,7 +107,9 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
                 if self.data[col].dtype == object:
                     self.data[col] = self.data[col].astype(str).str.strip()
 
-            self.data = self.data.drop_duplicates(subset=subset_cols).reset_index(drop=True)
+            self.data = self.data.drop_duplicates(subset=subset_cols).reset_index(
+                drop=True
+            )
             after = len(self.data)
 
             if after < before:
@@ -161,12 +170,14 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
         #   3. max_steps reached
         # ──────────────────────────────────────
         all_three_done = self._actions_applied >= {
-            "REMOVE_DUPLICATES", "FILL_MISSING", "FIX_FORMAT"
+            "REMOVE_DUPLICATES",
+            "FILL_MISSING",
+            "FIX_FORMAT",
         }
 
         missing_count = int(self.data.isnull().sum().sum())
-        email_count   = self._invalid_email_count()
-        dup_count     = int(
+        email_count = self._invalid_email_count()
+        dup_count = int(
             self.data.duplicated(
                 subset=[c for c in self.data.columns if c != "id"]
             ).sum()
@@ -199,7 +210,13 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
     # ─────────────────────────────────────────
     # OBSERVATION BUILDER
     # ─────────────────────────────────────────
-    def _build_observation(self, message, reward, done, final_score=None) -> OpenCleanObservation:
+    def _build_observation(
+        self,
+        message,
+        reward,
+        done,
+        final_score=None,
+    ) -> OpenCleanObservation:
         data = self.data if self.data is not None else pd.DataFrame()
 
         return OpenCleanObservation(
@@ -216,7 +233,10 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
             sample=data.head(2).to_dict() if not data.empty else {},
             reward=reward,
             done=done,
-            goal="Perform full data cleaning pipeline: remove duplicates, fill missing values, fix email formats",
+            goal=(
+                "Perform full data cleaning pipeline: remove duplicates, "
+                "fill missing values, fix email formats"
+            ),
             final_score=final_score,
             metadata={
                 "step": self._state.step_count,
@@ -244,5 +264,5 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
 
 
 # Aliases expected by app.py
-OpenCleanEnv      = OpenCleanEnvironment
+OpenCleanEnv = OpenCleanEnvironment
 KernelEnvironment = OpenCleanEnvironment

@@ -16,9 +16,7 @@ Endpoints:
 try:
     from openenv.core.env_server.http_server import create_app
 except Exception as e:  # pragma: no cover
-    raise ImportError(
-        "openenv is required. Install dependencies using pip."
-    ) from e
+    raise ImportError("openenv is required. Install dependencies using pip.") from e
 
 # Handle both local + docker execution
 try:
@@ -41,8 +39,7 @@ app = create_app(
 
 # -------- MAIN ENTRYPOINT --------
 def main() -> None:
-    """
-    Run the OpenEnv server.
+    """Run the OpenEnv server.
 
     Supports:
         python -m server.app

@@ -1,8 +1,11 @@
-import pandas as pd
 import os
+
+import pandas as pd
 
 
 class Grader:
+    """Simple score function comparing current data against clean reference data."""
+
     def __init__(self):
         # Load ground truth from CSV
         base_path = os.path.dirname(__file__)
@@ -11,6 +14,7 @@ class Grader:
         self.clean_data = pd.read_csv(os.path.join(data_path, "clean_data.csv"))
 
     def grade(self, df: pd.DataFrame) -> float:
+        """Return a bounded score in [0, 1] based on cleaning quality."""
         score = 0.0
 
         # ---------- SAFETY ----------
@@ -27,7 +31,9 @@ class Grader:
         if len(df) == len(self.clean_data):
             score += 0.25
         else:
-            score += 0.25 * (min(len(df), len(self.clean_data)) / max(len(df), len(self.clean_data)))
+            score += 0.25 * (
+                min(len(df), len(self.clean_data)) / max(len(df), len(self.clean_data))
+            )
 
         # ---------- 2. Missing values ----------
         missing = df.isnull().sum().sum()
@@ -44,7 +50,9 @@ class Grader:
         # ---------- 4. Data similarity ----------
         try:
             df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
-            clean_sorted = self.clean_data.sort_values(by=list(self.clean_data.columns)).reset_index(drop=True)
+            clean_sorted = self.clean_data.sort_values(
+                by=list(self.clean_data.columns)
+            ).reset_index(drop=True)
 
             matches = (df_sorted == clean_sorted).sum().sum()
             total = df_sorted.size

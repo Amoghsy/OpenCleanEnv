@@ -1,15 +1,16 @@
 import os
 from typing import List, Optional
-from openai import OpenAI
+
 from client import KernelEnv
 from models import OpenCleanAction
+from openai import OpenAI
 
 # -------- ENV CONFIG --------
 ENV_URL = os.getenv("ENV_URL", "http://127.0.0.1:8000")
 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-HF_TOKEN     = os.getenv("HF_TOKEN")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 TASK_NAME = "data_cleaning"
 BENCHMARK = "OpenCleanEnv"
@@ -18,10 +19,12 @@ MAX_STEPS = 5
 
 # -------- LOGGING --------
 def log_start(task: str, env: str, model: str):
+    """Print start log in benchmark-compatible format."""
     print(f"[START] task={task} env={env} model={model}", flush=True)
 
 
 def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]):
+    """Print per-step log in benchmark-compatible format."""
     error_val = error if error else "null"
     print(
         f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error_val}",
@@ -30,6 +33,7 @@ def log_step(step: int, action: str, reward: float, done: bool, error: Optional[
 
 
 def log_end(success: bool, steps: int, rewards: List[float]):
+    """Print final summary log in benchmark-compatible format."""
     rewards_str = ",".join(f"{r:.2f}" for r in rewards) if rewards else "0.00"
     print(
         f"[END] success={str(success).lower()} steps={steps} rewards={rewards_str}",
@@ -39,6 +43,7 @@ def log_end(success: bool, steps: int, rewards: List[float]):
 
 # -------- MAIN --------
 def run():
+    """Run one deterministic cleaning episode while issuing required LLM calls."""
     rewards: List[float] = []
     steps_taken = 0
     success = False

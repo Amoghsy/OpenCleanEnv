@@ -4,7 +4,7 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-"""Kernel Env Environment Client."""
+"""opencleanEnv Environment Client."""
 
 from typing import Dict
 
@@ -22,7 +22,7 @@ class KernelEnv(
     EnvClient[KernelAction, KernelObservation, State]
 ):
     """
-    Client for the Kernel Env Environment.
+    Client for the Open Clean Env Environment.
 
     This client maintains a persistent WebSocket connection to the environment server,
     enabling efficient multi-step interactions with lower latency.
@@ -39,7 +39,7 @@ class KernelEnv(
 
     Example with Docker:
         >>> # Automatically start container and connect
-        >>> client = KernelEnv.from_docker_image("kernel_env-env:latest")
+        >>> client = KernelEnv.from_docker_image("opencleanenv_env-env:latest")
         >>> try:
         ...     result = client.reset()
         ...     result = client.step(KernelAction(message="Test"))
