@@ -1,4 +1,16 @@
-# Placeholder input data for the cleaning pipeline
-id,name,email
-1, Alice ,alice_at_example.com
-2,,bob@example.com
+id,name,age,salary,email
+1,Alice,25,50000,alice@example.com
+2,Bob,,60000,bob_at_example.com
+3,Charlie,30,60000,charlie@example.com
+4,Charlie,30,60000,charlie@example.com
+5,David,28,,david@example
+6,Eve,,55000,eve@example.com
+7,Frank,40,70000,frank@mail.com
+8,Grace,35,,grace_at_mail.com
+9,Helen,,65000,helen@example.com
+10,Ian,29,48000,ianexample.com
+11,Alice,25,50000,alice@example.com
+12,Jack,31,,jack@example
+13,Kate,,72000,kate@example.com
+14,Liam,33,71000,liam_at_example.com
+15,Mona,27,,mona@example.com

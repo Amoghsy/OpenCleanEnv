@@ -1,4 +1,14 @@
-# Placeholder expected cleaned output
-id,name,email
-1,Alice,alice@example.com
-2,Unknown,bob@example.com
+id,name,age,salary,email
+1,Alice,25,50000,alice@example.com
+2,Bob,0,60000,fixed@mail.com
+3,Charlie,30,60000,charlie@example.com
+5,David,28,0,fixed@mail.com
+6,Eve,0,55000,eve@example.com
+7,Frank,40,70000,frank@mail.com
+8,Grace,35,0,fixed@mail.com
+9,Helen,0,65000,helen@example.com
+10,Ian,29,48000,fixed@mail.com
+12,Jack,31,0,fixed@mail.com
+13,Kate,0,72000,kate@example.com
+14,Liam,33,71000,fixed@mail.com
+15,Mona,27,0,mona@example.com

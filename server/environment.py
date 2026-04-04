@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from uuid import uuid4
 import os
-import random
 import pandas as pd
 
 from openenv.core.env_server.interfaces import Environment

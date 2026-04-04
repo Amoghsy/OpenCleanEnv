@@ -77,7 +77,11 @@ def run():
 
                 res = requests.post(
                     f"{ENV_URL}/step",
-                    json={"action": action}
+                    json={
+                        "action": {
+                            "action": action
+                        }
+                    }
                 ).json()
 
                 reward = float(res.get("reward", 0.0))
