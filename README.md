@@ -162,8 +162,3 @@ HF_TOKEN=your_token_here
 
 ---
 
-## 📌 Notes
-
-- No randomness is used in the environment  
-- Reward logic is deterministic  
-- Designed to pass strict OpenEnv validation  
