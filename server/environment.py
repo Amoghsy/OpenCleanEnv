@@ -68,7 +68,7 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
             "Environment reset",
             reward=0.0,
             done=False,
-            final_score=self.grader.grade(self.data),
+            final_score=None,
         )
 
     # ─────────────────────────────────────────
@@ -190,8 +190,9 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
             or dataset_clean
         )
 
-        # Always provide a score snapshot so final_score is never null.
-        final_score = self.grader.grade(self.data)
+        final_score = None
+        if done:
+            final_score = self.grader.grade(self.data)
 
         return self._build_observation(
             message=message,
