@@ -219,6 +219,17 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
         final_score=None,
     ) -> OpenCleanObservation:
         data = self.data if self.data is not None else pd.DataFrame()
+        sample = {}
+
+        if not data.empty:
+            raw_sample = data.head(2).to_dict()
+            sample = {
+                column: {
+                    index: (None if pd.isna(value) else value)
+                    for index, value in values.items()
+                }
+                for column, values in raw_sample.items()
+            }
 
         return OpenCleanObservation(
             message=message,
@@ -231,7 +242,7 @@ class OpenCleanEnvironment(Environment[OpenCleanAction, OpenCleanObservation, St
                 ).sum()
             ) if not data.empty else 0,
             invalid_emails=self._invalid_email_count() if not data.empty else 0,
-            sample=data.head(2).to_dict() if not data.empty else {},
+            sample=sample,
             reward=reward,
             done=done,
             goal=(

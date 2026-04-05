@@ -109,3 +109,5 @@ pytest_cache/
 
 *.bak
 *.backup
+
+docker local.txt
