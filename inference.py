@@ -4,7 +4,7 @@ from typing import List, Optional
 from openai import OpenAI
 
 # -------- ENV CONFIG --------
-ENV_URL = os.getenv("ENV_URL", "http://127.0.0.1:8000")
+ENV_URL = os.getenv("ENV_URL", "http://127.0.0.1:7860")
 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
