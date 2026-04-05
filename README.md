@@ -1,3 +1,15 @@
+---
+title: OpenCleanEnv
+emoji: ♻️
+colorFrom: green
+colorTo: blue
+sdk: docker
+sdk_version: "1.33.0"
+app_file: server/app.py
+pinned: false
+---
+
+
 # OpenCleanEnv — OpenEnv Data Cleaning Environment
 
 ## 🚀 Overview
