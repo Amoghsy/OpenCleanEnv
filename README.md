@@ -165,7 +165,14 @@ HF_TOKEN=your_token_here
 - ✅ Structured reward system  
 - ✅ Real LLM integration  
 
+## 🚀 Future Enhancements
 
+- Support for multiple datasets and difficulty levels  
+- Advanced cleaning actions (normalization, outlier removal)  
+- Adaptive reward system based on improvement percentage  
+- Action penalties and efficiency scoring  
+- Dataset export and visualization tools  
+- Explainable step-by-step transformations  
 ---
 
 ## 👨‍💻 Author
