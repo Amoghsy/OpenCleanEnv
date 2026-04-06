@@ -175,9 +175,9 @@ HF_TOKEN=your_token_here
 - Explainable step-by-step transformations  
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-**Amogh S Y**
+**Amogh S Y,A Jatin Ram Chowdary and Apeksh A **
 
 ---
 
