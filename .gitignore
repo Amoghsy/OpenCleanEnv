@@ -111,3 +111,4 @@ pytest_cache/
 *.backup
 
 docker local.txt
+validate-submission.sh
