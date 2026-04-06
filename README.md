@@ -177,7 +177,7 @@ HF_TOKEN=your_token_here
 
 ## 👨‍💻 Authors
 
-**Amogh S Y,A Jatin Ram Chowdary and Apeksh A **
+Amogh S Y,A Jatin Ram Chowdary and Apeksh A
 
 ---
 
