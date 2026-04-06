@@ -87,7 +87,7 @@ docker build -t openenv-kernel .
 Run the environment:
 
 ```bash
-docker run -p 8000:8000 openenv-kernel
+docker run -p 7860:7860 openenv-kernel
 ```
 
 ---
