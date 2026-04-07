@@ -35,11 +35,17 @@ Transform a dirty dataset into a fully clean dataset by applying the correct seq
 
 | Action | Description |
 |--------|-------------|
-| REMOVE_DUPLICATES | Removes duplicate rows (ignoring `id` column) |
+| REMOVE_DUPLICATES | Removes duplicate rows  |
 | FILL_MISSING | Replaces missing values with `0` |
 | FIX_FORMAT | Fixes invalid email formats |
 
----
+## ⚙️ Available Tasks
+
+| Task | Description |
+|------|------------|
+| Task 1 – Easy | Basic data cleaning workflow |
+| Task 2 – Medium | Same workflow with stricter evaluation |
+| Task 3 – Hard | Same workflow with tighter scoring sensitivity |
 
 ## 🧠 Reward System
 
@@ -49,8 +55,7 @@ Transform a dirty dataset into a fully clean dataset by applying the correct seq
 | FILL_MISSING (correct) | +0.3 |
 | FIX_FORMAT (correct) | +0.4 |
 
-✔ Maximum total reward = **1.0**
-
+Reward Range - 0.0 to 1.0
 ---
 
 ## 📁 Project Structure

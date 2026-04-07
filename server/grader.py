@@ -63,6 +63,6 @@ class Grader:
             pass
 
         # ---------- CLAMP ----------
-        score = max(0.0, min(1.0, score))
+        score = max(0.01, min(0.99, score))
 
         return round(score, 3)
